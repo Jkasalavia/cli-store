@@ -69,7 +69,7 @@ print("|".join([
   local URL VERSION EXPECTED ARGS EXT DEST ACTUAL
   IFS='|' read -r URL VERSION EXPECTED ARGS <<<"$PARSED"
   EXPECTED="$(printf '%s' "$EXPECTED" | tr '[:upper:]' '[:lower:]')"
-  EXT="${URL##*.}"
+  EXT="$(python3 -c 'from urllib.parse import urlparse; import os, sys; path=urlparse(sys.argv[1]).path; print((os.path.splitext(path)[1].lstrip(".") or "bin").lower())' "$URL")"
   DEST="/tmp/${APP}-${VERSION}.${EXT}"
 
   echo "  [*] Downloading $APP $VERSION..."
@@ -90,8 +90,37 @@ print("|".join([
       sudo installer -pkg "$DEST" -target / $ARGS
       ;;
     dmg)
-      local MOUNT APP_BUNDLE
-      MOUNT="$(hdiutil attach "$DEST" -nobrowse | awk 'END {print $NF}')"
+      local MOUNT APP_BUNDLE ATTACH_PLIST ATTACH_INFO DEVICE
+      ATTACH_PLIST="$(mktemp)"
+      if ! hdiutil attach "$DEST" -nobrowse -plist > "$ATTACH_PLIST"; then
+        rm -f "$ATTACH_PLIST" "$DEST"
+        echo "  [!] Failed to mount DMG." >&2
+        exit 1
+      fi
+      ATTACH_INFO="$(python3 - "$ATTACH_PLIST" <<'PY'
+import plistlib, sys
+with open(sys.argv[1], "rb") as f:
+    data = plistlib.load(f)
+mount = ""
+device = ""
+for item in data.get("system-entities", []):
+    if not mount and item.get("mount-point"):
+        mount = item.get("mount-point")
+    if not device and item.get("dev-entry"):
+        device = item.get("dev-entry")
+print(mount)
+print(device)
+PY
+)"
+      rm -f "$ATTACH_PLIST"
+      MOUNT="$(printf '%s\n' "$ATTACH_INFO" | sed -n '1p')"
+      DEVICE="$(printf '%s\n' "$ATTACH_INFO" | sed -n '2p')"
+      if [[ -z "$MOUNT" || ! -d "$MOUNT" ]]; then
+        if [[ -n "$DEVICE" ]]; then hdiutil detach "$DEVICE" >/dev/null || true; fi
+        rm -f "$DEST"
+        echo "  [!] DMG mounted, but no readable volume was found." >&2
+        exit 1
+      fi
       APP_BUNDLE="$(find "$MOUNT" -maxdepth 2 -name '*.app' -type d | head -n 1 || true)"
       if [[ -z "$APP_BUNDLE" ]]; then
         hdiutil detach "$MOUNT" >/dev/null || true
