@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JKSTORE CLI</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2c;
+      --text: #edf3ff;
+      --muted: #99a8c2;
+      --cyan: #35d7c2;
+      --amber: #f2b84b;
+      --line: #263752;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 12%, rgba(53, 215, 194, 0.18), transparent 34rem),
+        radial-gradient(circle at 85% 0%, rgba(242, 184, 75, 0.12), transparent 28rem),
+        linear-gradient(145deg, #080d19, var(--bg) 54%, #101829);
+    }
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+    .eyebrow {
+      color: var(--cyan);
+      font: 700 0.78rem Consolas, ui-monospace, monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.25rem, 7vw, 5.5rem);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 660px;
+      margin: 22px 0 34px;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.65;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(18, 26, 44, 0.88);
+      padding: 20px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: #ffffff;
+    }
+    code {
+      display: block;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #304363;
+      background: #070d19;
+      color: #b9fff3;
+      font: 600 0.92rem Consolas, ui-monospace, monospace;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 700;
+    }
+    .button.primary {
+      border-color: transparent;
+      background: var(--cyan);
+      color: #03211d;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Self-hosted app catalog</div>
+    <h1>JKSTORE CLI</h1>
+    <p class="lead">
+      A short terminal launcher for the app catalog. Windows users can open the install menu from PowerShell,
+      while Mac users can run the Bash launcher from Terminal.
+    </p>
+
+    <section class="grid" aria-label="CLI commands">
+      <div class="card">
+        <h2>Windows PowerShell</h2>
+        <code>irm https://jkasalavia.github.io/cli-store/r|iex</code>
+        <div class="note">Runs the interactive Windows installer menu from the live app-store service.</div>
+      </div>
+      <div class="card">
+        <h2>macOS Terminal</h2>
+        <code>curl -fsSL https://jkasalavia.github.io/cli-store/m|bash</code>
+        <div class="note">Runs the Mac installer menu using the same app catalog.</div>
+      </div>
+    </section>
+
+    <div class="links">
+      <a class="button primary" href="https://appstore.fvcloud.online">Open Store</a>
+      <a class="button" href="https://github.com/Jkasalavia/cli-store">GitHub Repo</a>
+      <a class="button" href="https://appstore.fvcloud.online/admin">Admin Login</a>
+    </div>
+  </main>
+</body>
+</html>

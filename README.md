@@ -28,6 +28,18 @@ node server.js
 
 ## CLI
 
+Short GitHub launcher:
+
+```powershell
+irm https://jkasalavia.github.io/cli-store/r|iex
+```
+
+macOS:
+
+```bash
+curl -fsSL https://jkasalavia.github.io/cli-store/m|bash
+```
+
 Windows (PowerShell) — interactive menu:
 
 ```powershell
